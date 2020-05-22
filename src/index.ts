@@ -35,7 +35,7 @@ export function parseStyles(
 
 function contructStyleTree(styles: string[]): StyleTree {
   const styleTree = styles.reduce((tree, styleString) => {
-    const [query] = styleString.match(/@.+(?=\()/g);
+    const [query] = styleString.match(/@([^\(])+(?=\()/g);
     const [selectors] = styleString.match(/(?<=\().+(?=\))/g);
     if (!query || !selectors) {
       return tree;
@@ -73,8 +73,14 @@ function parseCssValue(cssString: string): string[] {
       const [property, value] = item.split(":");
       // Test if value is a variable
       if (RegExp(/\$.+/g).test(value)) {
-        const cleaned = value.replace("$", "");
-        return `${property}: var(--${cleaned})`;
+        const variables = value.match(/\$[^\);,\s]+/g);
+        const cleanedValue = variables.reduce((cleanedValue, variable) => {
+          return cleanedValue.replace(
+            `${variable}`,
+            `var(--${variable.replace("$", "")})`
+          );
+        }, value);
+        return `${property}: ${cleanedValue};`;
       }
       return `${property}: ${value};`;
     });
