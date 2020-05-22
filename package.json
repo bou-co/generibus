@@ -1,0 +1,14 @@
+{
+  "name": "generibus",
+  "version": "0.1.0",
+  "description": "Library for parsing styles",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "Bou",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.9.3"
+  }
+}
