@@ -12,18 +12,18 @@ export interface MediaQueries {
 }
 
 const DEFAULT_MEDIA_QUERIES: MediaQueries = {
-  "@all": "@media (min-width: 0)",
-  "@desktop": "@media (min-width: 1200px)",
-  "@tablet": "@media (min-width: 600px) and (max-width: 1200px)",
-  "@mobile": "@media (max-width: 600px), (orientation: portrait)",
-  "@portrait": "@media (orientation: portrait)",
-  "@landscape": "@media (orientation: landscape)",
+  '@all': '@media (min-width: 0)',
+  '@desktop': '@media (min-width: 1200px)',
+  '@tablet': '@media (min-width: 600px) and (max-width: 1200px)',
+  '@mobile': '@media (max-width: 600px), (orientation: portrait)',
+  '@portrait': '@media (orientation: portrait)',
+  '@landscape': '@media (orientation: landscape)',
 };
 
 export function parseStyles(
   styles: string[],
   rootClass: string,
-  customQueries: MediaQueries
+  customQueries?: MediaQueries,
 ): string {
   if (!styles || styles.length < 1) {
     return null;
@@ -50,34 +50,34 @@ function contructStyleTree(styles: string[]): StyleTree {
 }
 
 function constructSelectorCssString(selectors: string): string {
-  const splittedSelectors = selectors.split("/");
+  const splittedSelectors = selectors.split('/');
   // Check if there is selectors
   if (splittedSelectors.length === 1) {
     const _css = parseCssValue(selectors);
-    return `{${_css.join(" ")}}`;
+    return `{${_css.join(' ')}}`;
   }
   return splittedSelectors.reduceRight((tree, selector, i) => {
     if (splittedSelectors.length === i + 1) {
       const _css = parseCssValue(selector);
-      return `{${_css.join(" ")}}`;
+      return `{${_css.join(' ')}}`;
     }
     return `${selector} ${tree}`;
-  }, "");
+  }, '');
 }
 
 function parseCssValue(cssString: string): string[] {
   return cssString
-    .split(";")
+    .split(';')
     .filter((item) => !!item)
     .map((item) => {
-      const [property, value] = item.split(":");
+      const [property, value] = item.split(':');
       // Test if value is a variable
       if (RegExp(/\$.+/g).test(value)) {
         const variables = value.match(/\$[^\);,\s]+/g);
         const cleanedValue = variables.reduce((cleanedValue, variable) => {
           return cleanedValue.replace(
             `${variable}`,
-            `var(--${variable.replace("$", "")})`
+            `var(--${variable.replace('$', '')})`,
           );
         }, value);
         return `${property}: ${cleanedValue};`;
@@ -89,9 +89,11 @@ function parseCssValue(cssString: string): string[] {
 function combineToCss(
   styleTree: StyleTree,
   rootClass: string,
-  customQueries: MediaQueries
+  customQueries?: MediaQueries,
 ) {
-  const mediaQueries = { ...DEFAULT_MEDIA_QUERIES, ...customQueries };
+  const mediaQueries = customQueries
+    ? { ...DEFAULT_MEDIA_QUERIES, ...customQueries }
+    : DEFAULT_MEDIA_QUERIES;
   const css = Object.keys(styleTree)
     .reduce((acc, queryName) => {
       const queryString = mediaQueries[queryName];
@@ -101,9 +103,9 @@ function combineToCss(
       const selectorTree = styleTree[queryName];
       const cssString = `${queryString} { ${selectorTree
         .map((selector) => `.${rootClass} ${selector}`)
-        .join(" ")} }`;
+        .join(' ')} }`;
       return [...acc, cssString];
     }, [])
-    .join("\n");
+    .join('\n');
   return css;
 }

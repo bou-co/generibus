@@ -1,14 +1,31 @@
 {
-  "name": "generibus",
-  "version": "0.1.0",
+  "name": "@bou-co/generibus",
+  "version": "0.1.1",
   "description": "Library for parsing styles",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "publish:npm": "npm run build && npm publish"
+  },
+  "keywords": [
+    "headless cms",
+    "styles",
+    "css"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
   },
   "author": "Bou",
   "license": "MIT",
   "devDependencies": {
     "typescript": "^3.9.3"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true
   }
 }
