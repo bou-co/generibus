@@ -1,6 +1,6 @@
 {
   "name": "@bou-co/generibus",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Library for parsing styles",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
