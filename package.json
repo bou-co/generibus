@@ -17,6 +17,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bou-co/generibus"
+  },
   "author": "Bou",
   "license": "MIT",
   "devDependencies": {
