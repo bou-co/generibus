@@ -7,7 +7,7 @@
     "build": "tsc"
   },
   "author": "Bou",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^3.9.3"
   }
