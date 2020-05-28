@@ -17,7 +17,7 @@ export function parseStyles(
   styles: string[],
   rootClass: string,
   customQueries?: MediaQueries,
-): string {
+): string | null {
   if (!styles || styles.length < 1 || !Array.isArray(styles)) {
     return null;
   }
@@ -45,7 +45,7 @@ function contructStyleTree(styles: string[]): StyleTree {
       });
       return tree;
     }
-  }, {});
+  }, {} as StyleTree);
   return styleTree;
 }
 
@@ -119,7 +119,7 @@ function combineToCss(
         .map((selector) => `.${rootClass} ${selector}`)
         .join(' ')} }`;
       return [...acc, cssString];
-    }, [])
+    }, [] as string[])
     .join('\n');
   return css;
 }
