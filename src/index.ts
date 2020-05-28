@@ -1,10 +1,3 @@
-export interface StylesProps {
-  styles: string[];
-  className: string;
-  uid: string;
-  children: any;
-}
-
 type StyleTree = { [query: string]: string[] };
 
 export interface MediaQueries {
@@ -25,7 +18,7 @@ export function parseStyles(
   rootClass: string,
   customQueries?: MediaQueries,
 ): string {
-  if (!styles || styles.length < 1) {
+  if (!styles || styles.length < 1 || !Array.isArray(styles)) {
     return null;
   }
   const tree = contructStyleTree(styles);
@@ -35,16 +28,23 @@ export function parseStyles(
 
 function contructStyleTree(styles: string[]): StyleTree {
   const styleTree = styles.reduce((tree, styleString) => {
-    const [query] = styleString.match(/@([^\(])+(?=\()/g);
-    const [selectors] = styleString.match(/(?<=\().+(?=\))/g);
-    if (!query || !selectors) {
+    try {
+      const [query] = styleString.match(/@([^\(])+(?=\()/g);
+      const [selectors] = styleString.match(/(?<=\().+(?=\))/g);
+      if (!query || !selectors) {
+        return tree;
+      }
+      const selectorCssString = constructSelectorCssString(selectors);
+      if (tree[query]) {
+        return { ...tree, [query]: [...tree[query], selectorCssString] };
+      }
+      return { ...tree, [query]: [selectorCssString] };
+    } catch (error) {
+      console.error('There was a problem parsing these styles:', styleString, {
+        error,
+      });
       return tree;
     }
-    const selectorCssString = constructSelectorCssString(selectors);
-    if (tree[query]) {
-      return { ...tree, [query]: [...tree[query], selectorCssString] };
-    }
-    return { ...tree, [query]: [selectorCssString] };
   }, {});
   return styleTree;
 }
@@ -74,6 +74,13 @@ function parseCssValue(cssString: string): string[] {
       // Test if value is a variable
       if (RegExp(/\$.+/g).test(value)) {
         const variables = value.match(/\$[^\);,\s]+/g);
+        if (!variables || variables.length < 1) {
+          console.warn(`Detected variables but could not parse them!`, {
+            value,
+            variables,
+          });
+          return `${property}: ${value};`;
+        }
         const cleanedValue = variables.reduce((cleanedValue, variable) => {
           return cleanedValue.replace(
             `${variable}`,
@@ -101,6 +108,13 @@ function combineToCss(
         return acc;
       }
       const selectorTree = styleTree[queryName];
+      if (
+        !selectorTree ||
+        selectorTree.length < 1 ||
+        !Array.isArray(selectorTree)
+      ) {
+        return acc;
+      }
       const cssString = `${queryString} { ${selectorTree
         .map((selector) => `.${rootClass} ${selector}`)
         .join(' ')} }`;
