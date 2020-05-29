@@ -30,19 +30,19 @@ function contructStyleTree(styles: string[]): StyleTree {
   const styleTree = styles.reduce((tree, styleString) => {
     try {
       const [query] = styleString.match(/@([^\(])+(?=\()/g);
-      const [selectors] = styleString.match(/(?<=\().+(?=\))/g);
+      const [selectors] = styleString.match(/\(.+\)/g);
       if (!query || !selectors) {
         return tree;
       }
-      const selectorCssString = constructSelectorCssString(selectors);
+      const selectorCssString = constructSelectorCssString(
+        selectors.replace(/^\(|\)$/g, ''),
+      );
       if (tree[query]) {
         return { ...tree, [query]: [...tree[query], selectorCssString] };
       }
       return { ...tree, [query]: [selectorCssString] };
     } catch (error) {
-      console.error('There was a problem parsing these styles:', styleString, {
-        error,
-      });
+      console.error('There was a problem parsing these styles:', styleString);
       return tree;
     }
   }, {} as StyleTree);
