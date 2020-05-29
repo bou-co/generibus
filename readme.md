@@ -5,6 +5,7 @@
 A tool for parsing styles from CMS. Generates vanilla CSS that can handle media queries, CSS variables and basic properties.
 
 NPM package available at [@bou-co/generibus](https://www.npmjs.com/package/@bou-co/generibus)
+Git repository at [github.com/bou-co/generibus](https://github.com/bou-co/generibus)
 
 ```bash
 npm install @bou-co/generibus
