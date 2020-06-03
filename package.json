@@ -21,6 +21,7 @@
     "type": "git",
     "url": "https://github.com/bou-co/generibus"
   },
+  "homepage": "https://bou-co.github.io/generibus/",
   "author": "Bou",
   "license": "MIT",
   "devDependencies": {

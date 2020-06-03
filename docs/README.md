@@ -18,9 +18,32 @@ npm install --save @bou-co/generibus
 yarn add @bou-co/generibus
 ```
 
-## Documentation & getting started
+## Creating styles
 
-Documentation available at [bou-co.github.io/generibus/](https://bou-co.github.io/generibus/)
+All styles are formatted in a same way.
+
+**Syntax:**
+
+```
+@MEDIA_QUERY(SELECTOR/PROPERTY:VALUE;PROPERTY:VALUE;)
+```
+
+**Example:**
+
+```
+@mobile(h1/font-size:28px;color:#444444;)
+```
+
+[List of available media queries](/mediaQueries)
+
+## Basic usage
+
+```js
+const styles = ['@all(h1/transition:250ms;)', '@all(h1:hover/color:red;)'];
+const rootClass = `_${new Date().getTime()}`;
+const css = parseStyles(styles, rootClass);
+// ... do something with generated css
+```
 
 ## Live example & playground
 
