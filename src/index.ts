@@ -15,7 +15,7 @@ const DEFAULT_MEDIA_QUERIES: MediaQueries = {
 
 export function parseStyles(
   styles: string[],
-  rootClass: string,
+  rootClass?: string,
   customQueries?: MediaQueries,
 ): string | null {
   if (!styles || styles.length < 1 || !Array.isArray(styles)) {
@@ -29,8 +29,8 @@ export function parseStyles(
 function contructStyleTree(styles: string[]): StyleTree {
   const styleTree = styles.reduce((tree, styleString) => {
     try {
-      const [query] = styleString.match(/@([^\(])+(?=\()/g);
-      const [selectors] = styleString.match(/\(.+\)/g);
+      const [query] = styleString.match(/@([^\(])+(?=\()/g) as RegExpMatchArray;
+      const [selectors] = styleString.match(/\(.+\)/g) as RegExpMatchArray;
       if (!query || !selectors) {
         return tree;
       }
@@ -95,7 +95,7 @@ function parseCssValue(cssString: string): string[] {
 
 function combineToCss(
   styleTree: StyleTree,
-  rootClass: string,
+  rootClass?: string,
   customQueries?: MediaQueries,
 ) {
   const mediaQueries = customQueries
@@ -116,7 +116,7 @@ function combineToCss(
         return acc;
       }
       const cssString = `${queryString} { ${selectorTree
-        .map((selector) => `.${rootClass} ${selector}`)
+        .map((selector) => (rootClass ? `.${rootClass} ${selector}` : selector))
         .join(' ')} }`;
       return [...acc, cssString];
     }, [] as string[])
