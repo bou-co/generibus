@@ -115,10 +115,17 @@ function combineToCss(
       ) {
         return acc;
       }
-      const cssString = `${queryString} { ${selectorTree
-        .map((selector) => (rootClass ? `.${rootClass} ${selector}` : selector))
-        .join(' ')} }`;
-      return [...acc, cssString];
+      if (rootClass) {
+        // Add with rootClass
+        const cssString = `${queryString} { ${selectorTree
+          .map((selector) => `.${rootClass} ${selector}`)
+          .join(' ')} }`;
+        return [...acc, cssString];
+      } else {
+        // Add without rootClass
+        const cssString = `${queryString} ${selectorTree.join(' ')}`;
+        return [...acc, cssString];
+      }
     }, [] as string[])
     .join('\n');
   return css;
